@@ -8,6 +8,7 @@ workspace:
     ports:
       tools-webide-vscode: 6800
       tools-ssh: 6822
+      tools-jupyter: 8888
     ide-type: vscode
     volumes: 
       git-config: true
@@ -26,6 +27,7 @@ workspace:
       ports:
         - 6822:22
         - 6800:3000
+        - 8888:8888
       networks:
         - smartide-network  
   networks:
