@@ -18,7 +18,7 @@ workspace:
       
   services:
     smartide-anaconda-jupyter:
-      image: registry.cn-hangzhou.aliyuncs.com/smartide/smartide-anaconda-v2-jupyter:1.1
+      image: registry.cn-hangzhou.aliyuncs.com/smartide/smartide-anaconda-v2-jupyter:latest
       restart: always
       environment:
         LOCAL_USER_PASSWORD: root123
