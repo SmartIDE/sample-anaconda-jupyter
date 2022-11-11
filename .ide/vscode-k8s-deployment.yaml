@@ -1,0 +1,76 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartide-anaconda-jupyter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      smartide-vscode.service: smartide-vscode-anaconda-jupyter
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        smartide-vscode.service: smartide-vscode-anaconda-jupyter
+    spec:
+      containers:
+        - env:
+            - name: LOCAL_USER_PASSWORD
+              value: root123
+          image: registry.cn-hangzhou.aliyuncs.com/smartide/smartide-anaconda-v2-jupyter:latest
+          imagePullPolicy: Always
+          name: smartide-anaconda-jupyter
+          ports:
+            - containerPort: 3000
+            - containerPort: 22
+            - containerPort: 8888
+            
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartide-vscode-anaconda-jupyter-service
+spec:
+  ports:   
+    - name: "6800"
+      port: 6800
+      targetPort: 3000
+    - name: "6822"
+      port: 6822
+      targetPort: 22
+    - name: "8888"
+      port: 8888
+      targetPort: 8888
+  selector:
+    smartide-vscode.service: smartide-vscode-anaconda-jupyter
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: smartide-vscode-anaconda-jupyter-network
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              smartide-vscode-anaconda-jupyter/smartide-network: "true"
+  podSelector:
+    matchLabels:
+      smartide-vscode-anaconda-jupyter/smartide-network: "true"
